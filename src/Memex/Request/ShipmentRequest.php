@@ -17,17 +17,17 @@ class ShipmentRequest
         $result = [
             'token' => $token->transform(),
             'shipmentRequest'   => [
-                'ServiceId'         => 38,
-                'ShipFrom'          => $location->transform($shipment_request['ship_from']),
-                'ShipTo'            => $location->transform($shipment_request['ship_to']),
-                'Parcels'           => ['Parcel'=>$parcels_obj->transform($shipment_request['parcels'])],
-                'COD'               => [
-                    'Amount'        => $shipment_request['cod'],
-                    'RetAccountNo'  => 0
+                'ServiceId'             => 38,
+                'ShipFrom'              => $location->transform($shipment_request['ship_from']),
+                'ShipTo'                => $location->transform($shipment_request['ship_to']),
+                'Parcels'               => ['Parcel'=>$parcels_obj->transform($shipment_request['parcels'])],
+                'COD'                   => [
+                    'Amount'                => $shipment_request['cod'],
+                    'RetAccountNo'          => 0
                 ],
-                'InsuranceAmount'   => $shipment_request['insurance_amount'],
-                'LabelFormat'       => $shipment_request['label_format'],
-                'MPK'               => '',
+                'InsuranceAmount'       => $shipment_request['insurance_amount'],
+                'LabelFormat'           => $shipment_request['label_format'],
+                'MPK'                   => '',
                 'ContentDescription'    => '',
                 'RebateCoupon'          => 0,
                 'AdditionalServices'    => []
@@ -36,10 +36,6 @@ class ShipmentRequest
         if(isset($shipment_request['no_eu'])){
             $result['shipmentRequest']['NoEu'] = $shipment_request['no_eu'];
         }
-
-//        if(isset($shipment_request['no_eu'])){
-//            $result['shipmentRequest']['NoEu'] = $shipment_request['no_eu'];
-//        }
         return [$result];
     }
 }

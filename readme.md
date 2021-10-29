@@ -44,8 +44,31 @@ $shipment_request = [
 'label_format'      => 'PDF'
 ];
 $response = $memex->createShipment($shipment_request);
+```
+## cancelShipment
+canccel one shipment
+```
+$memex->cancelShipment($api_id);
+```
+## cancelShipments
+cancel multiple shipments
+```
+$memex->cancelShipments([$id_o,$id_s]);
+```
 
-
-getLabelPdfApi
+## getLabelPdfApi
+get one label
+```
 $memex->getLabelPdfApi($api_id);
+```
+
+## getLabels
+get multiple labels
+```
+$memex->getLabels([$id_o,$id_s]);
+```
+
+getTracking
+```
+$memex->getTracking($id);
 ```

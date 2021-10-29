@@ -1,8 +1,10 @@
 <?php
 namespace Memex;
 
+use Memex\Request\CancelShipmentRequest;
 use Memex\Request\GetAvailableServicesRequest;
 use Memex\Request\ShipmentRequest;
+use SoapClient;
 
 class Memex
 {
@@ -19,10 +21,10 @@ class Memex
         $soap_options = [
             'trace'         => 1,
             'exceptions'    => 1,
-            'cache_wsdl'    => WSDL_CACHE_NONE,
+            //'cache_wsdl'    => WSDL_CACHE_NONE,
         ];
 
-        return new \SoapClient( $this->url, $soap_options);
+        return new SoapClient( $this->url, $soap_options);
     }
 
     public function call($method, $params)
@@ -33,8 +35,11 @@ class Memex
         try {
             $results = $this->client->__soapCall($method, $params);
         } catch (SoapFault $e) {
-            var_dump($e->getMessage());
-            die();
+            error_log('soap exception ' . print_r($e->getMessage(), true));
+            return [
+                'error'         => true,
+                'message'       => $e->getMessage()
+            ];
         }
         return $results;
     }
@@ -59,6 +64,9 @@ class Memex
             ]
         ];
         $response = $this->call('GetLabel', [$params]);
+        if(is_array($response)&&isset($response['error'])){
+            return $response;
+        }
         if(!isset($response->GetLabelResult->responseDescription) || ($response->GetLabelResult->responseDescription !== 'Success')) {
             error_log('GetLabel resp ' . print_r($response, true));
             return [
@@ -68,11 +76,68 @@ class Memex
         return $response->GetLabelResult->LabelData->Label->MimeData;
     }
 
+    public function getLabels($ids)
+    {
+        $params = [
+            "token" => [
+                'UserName'  => $this->user,
+                'Password'  => $this->password
+            ],
+            "getLabelRequest" => [
+                "PackageNo" =>  $ids
+            ]
+        ];
+        $response = $this->call('GetLabel', [$params]);
+        if(is_array($response)&&isset($response['error'])){
+            return $response;
+        }
+
+        if(!isset($response->GetLabelResult->responseDescription) || ($response->GetLabelResult->responseDescription !== 'Success')) {
+            error_log('GetLabel resp ' . print_r($response, true));
+            return [
+                'error'         => true,
+            ];
+        }
+        return $response->GetLabelResult->LabelData->Label->MimeData;
+    }
+
+    public function getTracking($id)
+    {
+        $params = [
+            "token" => [
+                'UserName'  => $this->user,
+                'Password'  => $this->password
+            ],
+            "PackageNo" =>  $id
+        ];
+        var_dump($params);
+        $response = $this->call('GetTracking', [$params]);
+        if(is_array($response)&&isset($response['error'])){
+            return $response;
+        }
+        return $response;
+    }
+
+    public function cancelShipment($id)
+    {
+        $request = new CancelShipmentRequest($this->user,$this->password);
+        return  $this->call('CancelShipment', $request->getParams($id));
+    }
+
+    public function cancelShipments($ids)
+    {
+        $request = new CancelShipmentRequest($this->user,$this->password);
+        return  $this->call('CancelShipment', $request->getParams($ids));
+    }
+
     public function createShipment($shipment_request)
     {
         $request = new ShipmentRequest($this->user,$this->password);
         $response =  $this->call('CreateShipment', $request->getParams($shipment_request));
-        if(!isset($response->CreateShipmentResult->responseDescription) || ($response->CreateShipmentResult->responseDescription != 'Success')) {
+        if(is_array($response)&&isset($response['error'])){
+            return $response;
+        }
+        if(!isset($response->CreateShipmentResult->responseDescription) || ($response->CreateShipmentResult->responseDescription !== 'Success')) {
             error_log('CreateShipment resp ' . print_r($response, true));
             return [
                 'error'         => true,
