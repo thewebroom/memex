@@ -108,9 +108,8 @@ class Memex
                 'UserName'  => $this->user,
                 'Password'  => $this->password
             ],
-            "PackageNo" =>  $id
+            "packageNo" =>  $id
         ];
-        var_dump($params);
         $response = $this->call('GetTracking', [$params]);
         if(is_array($response)&&isset($response['error'])){
             return $response;
