@@ -91,12 +91,18 @@ class Memex
         if(is_array($response)&&isset($response['error'])){
             return $response;
         }
-
         if(!isset($response->GetLabelResult->responseDescription) || ($response->GetLabelResult->responseDescription !== 'Success')) {
             error_log('GetLabel resp ' . print_r($response, true));
             return [
                 'error'         => true,
             ];
+        }
+        if(is_array($response->GetLabelResult->LabelData->Label)){
+            $result = [];
+            foreach ($response->GetLabelResult->LabelData->Label as $item){
+                $result[$item->ParcelID] = $item->MimeData;
+            }
+            return $result;
         }
         return $response->GetLabelResult->LabelData->Label->MimeData;
     }
