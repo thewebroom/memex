@@ -28,7 +28,7 @@ class ShipmentRequest
                 'InsuranceAmount'       => $shipment_request['insurance_amount'],
                 'LabelFormat'           => $shipment_request['label_format'],
                 'MPK'                   => '',
-                'ContentDescription'    => '',
+                'ContentDescription'    => $shipment_request['content_description'],
                 'RebateCoupon'          => 0,
                 'AdditionalServices'    => []
             ]
