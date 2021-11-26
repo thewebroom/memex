@@ -30,7 +30,11 @@ class ShipmentRequest
                 'MPK'                   => '',
                 'ContentDescription'    => $shipment_request['content_description'],
                 'RebateCoupon'          => 0,
-                'AdditionalServices'    => []
+                'AdditionalServices'    => [
+                    'AdditionalService' => [
+                        ['Code'=>'SSMS']
+                    ]
+                ],
             ]
         ];
         if(isset($shipment_request['no_eu'])){
