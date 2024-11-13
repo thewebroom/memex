@@ -17,7 +17,7 @@ class ShipmentRequest
         $result = [
             'token' => $token->transform(),
             'shipmentRequest'   => [
-                'ServiceId'             => 38,
+                'ServiceId'             => 113,
                 'ShipFrom'              => $location->transform($shipment_request['ship_from']),
                 'ShipTo'                => $location->transform($shipment_request['ship_to']),
                 'Parcels'               => ['Parcel'=>$parcels_obj->transform($shipment_request['parcels'])],
